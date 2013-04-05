@@ -1,7 +1,6 @@
 require 'socket'
 require 'timeout'
 require 'thread'
-require 'open3'
 
 module Capybara::Webkit
   class Connection
@@ -49,8 +48,7 @@ module Capybara::Webkit
     end
 
     def open_pipe
-      _, @pipe_stdout, @pipe_stderr, wait_thr = Open3.popen3(SERVER_PATH)
-      @pid = wait_thr[:pid]
+      @pid, _, @pipe_stdout, @pipe_stderr = IO.popen4(SERVER_PATH)
       register_shutdown_hook
     end
 
